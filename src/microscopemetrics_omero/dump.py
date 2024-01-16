@@ -42,19 +42,17 @@ def dump_image(
             np.array(image.data)
             .reshape(
                 (
-                    int(image.t.values[0]),
-                    int(image.z.values[0]),
-                    int(image.y.values[0]),
-                    int(image.x.values[0]),
-                    int(image.c.values[0]),
+                    image.shape_t,
+                    image.shape_z,
+                    image.shape_y,
+                    image.shape_x,
+                    image.shape_c,
                 )
             )
             .transpose((1, 4, 0, 2, 3))
         )
     elif isinstance(image, mm_schema.Image2D):
-        image_data = np.array(image.data).reshape(
-            (1, 1, int(image.y.values[0]), int(image.x.values[0]), 1)
-        )
+        image_data = np.array(image.data).reshape((1, 1, image.shape_y, image.shape_x, 1))
     elif isinstance(image, mm_schema.ImageAsNumpy):
         image_data = image.data.transpose((1, 4, 0, 2, 3))
     else:

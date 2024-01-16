@@ -3,7 +3,11 @@ from dataclasses import fields
 from datetime import datetime
 from typing import Union
 
-from microscopemetrics.samples import argolight, field_illumination
+from microscopemetrics.samples import (
+    argolight,
+    field_illumination,
+    numpy_to_image_byref,
+)
 from microscopemetrics_schema.datamodel import microscopemetrics_schema as mm_schema
 from omero.gateway import BlitzGateway, DatasetWrapper, ImageWrapper, ProjectWrapper
 
@@ -57,11 +61,12 @@ def process_image(image: ImageWrapper, analysis_config: dict) -> mm_schema.Metri
         name=analysis_config["name"],
         description=analysis_config["description"],
         input={
-            analysis_config["data"]["name"]: {
-                "data": load.load_image(image),
-                "name": image.getName(),
-                "image_url": omero_tools.get_url_from_object(image),
-            },
+            analysis_config["data"]["name"]: numpy_to_image_byref(
+                array=load.load_image(image),
+                name=image.getName(),
+                description=image.getDescription(),
+                image_url=omero_tools.get_url_from_object(image),
+            ),
             **analysis_config["parameters"],
         },
         output={},

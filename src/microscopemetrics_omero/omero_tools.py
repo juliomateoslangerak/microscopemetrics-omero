@@ -625,8 +625,8 @@ def create_shape_mask(mm_mask: mm_schema.Mask):
     mask.setY(rdouble(mm_mask.y))
     mask.setTheZ(rint(mm_mask.z))
     mask.setTheT(rint(mm_mask.t))
-    mask.setWidth(rdouble(mm_mask.mask.x.values[0]))  # TODO: see how to get shape if not np.array
-    mask.setHeight(rdouble(mm_mask.mask.y.values[0]))
+    mask.setWidth(rdouble(mm_mask.mask.shape_x))  # TODO: see how to get shape if not np.array
+    mask.setHeight(rdouble(mm_mask.mask.shape_y))
     mask_packed = np.packbits(mm_mask.mask.data)  # TODO: raise error when not boolean array
     mask.setBytes(mask_packed.tobytes())  # TODO: review how to setBytes when not a np.array
     _set_shape_properties(
