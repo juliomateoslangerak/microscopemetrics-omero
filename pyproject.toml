@@ -19,8 +19,8 @@ filterwarnings = [
     "default::DeprecationWarning:__main__",
     "ignore::DeprecationWarning",
     "ignore::PendingDeprecationWarning",
-    "ignore::ImportWarning",
-    "ignore::ResourceWarning",
+#    "ignore::ImportWarning",
+#    "ignore::ResourceWarning",
 
 #    'ignore::DeprecationWarning:omero.*:',
 #    'ignore::DeprecationWarning:omero_ext.*:',
