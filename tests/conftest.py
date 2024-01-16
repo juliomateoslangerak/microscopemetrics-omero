@@ -10,9 +10,9 @@ import pandas as pd
 import pytest
 import yaml
 from microscopemetrics.samples import (
-    dict_to_inlined_table,
-    numpy_to_inlined_image,
-    numpy_to_inlined_mask,
+    dict_to_table_inlined,
+    numpy_to_image_inlined,
+    numpy_to_mask_inlined,
 )
 
 # TODO: make a test dataset programmatically
@@ -124,7 +124,7 @@ def mm_image_as_numpy_fixture(numpy_image_fixture):
 
 @pytest.fixture
 def mm_image2d_fixture(numpy_image_fixture):
-    return numpy_to_inlined_image(
+    return numpy_to_image_inlined(
         array=numpy_image_fixture[0, 0, :, :, 0],
         name="test_image",
         description="test image",
@@ -135,7 +135,7 @@ def mm_image2d_fixture(numpy_image_fixture):
 
 @pytest.fixture
 def mm_image5d_fixture(numpy_image_fixture):
-    return numpy_to_inlined_image(
+    return numpy_to_image_inlined(
         array=numpy_image_fixture,
         name="test_image",
         description="test image",
@@ -149,7 +149,7 @@ def mm_image_mask_fixture():
     mask = np.zeros((100, 100), dtype=bool)
     mask[20:80, 20:80] = True
 
-    return numpy_to_inlined_mask(
+    return numpy_to_mask_inlined(
         array=mask,
         name="test_mask",
         description="test mask",
@@ -281,7 +281,7 @@ def mm_table_as_pandas_df_fixture(pandas_df_fixture):
 
 @pytest.fixture
 def mm_table_as_dict_fixture(dict_table_fixture):
-    return dict_to_inlined_table(
+    return dict_to_table_inlined(
         dictionary=dict_table_fixture,
         name="test_table",
         description="test table description",
