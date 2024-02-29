@@ -10,6 +10,7 @@ readme = "README.md"
 keywords = ["microscopy", "metrology"]
 
 [tool.pytest.ini_options]
+addopts = "--hypothesis-show-statistics --hypothesis-profile=dev"
 #addopts = "--cov"
 testpaths = [
     "tests"
@@ -42,7 +43,7 @@ filterwarnings = [
 [tool.poetry.dependencies]
 python = ">=3.8.10 <=3.11"
 #microscopemetrics = "0.2.2"
-microscopemetrics = {git = "https://github.com/juliomateoslangerak/microscope-metrics.git"}
+microscopemetrics = {git = "https://github.com/juliomateoslangerak/microscope-metrics.git", branch="main"}
 omero-py = "^5"
 pyyaml = "^6"
 

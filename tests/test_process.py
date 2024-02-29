@@ -12,7 +12,13 @@ from microscopemetrics_omero import omero_tools, process
 
 
 def _generate_dataset(
-    conn, analysis_name, project_structure, dataset_name, image_name, ns, study_conf_path
+    conn,
+    analysis_name,
+    project_structure,
+    dataset_name,
+    image_name,
+    ns,
+    study_conf_path,
 ):
     current_conn = conn.suConn("facility_manager_microscope_1", "microscope_1")
 
@@ -49,7 +55,7 @@ def _generate_dataset(
                 ann.getFileInChunks().__next__().decode(), Loader=yaml.SafeLoader
             )
             break
-    study_config["analysis"][analysis_name]["data"]["tag_id"] = tag.getId()
+    # study_config["analysis"][analysis_name]["data"]["tag_id"] = tag.getId()
     config = {
         "script_parameters": script_params,
         "main_config": main_config,
@@ -66,7 +72,7 @@ def field_illumination_dataset(conn, project_structure):
         "FieldIllumination",
         project_structure,
         "fh_date_stamp_1",
-        "field_illumination_image.czi",
+        "field_illumination_image.tif",
         FieldIlluminationDataset.class_model_uri,
         "./tests/data/config_files/field_illumination/study_config.yaml",
     )
@@ -86,28 +92,28 @@ def argolight_b_dataset(conn, project_structure):
 
 
 @pytest.fixture(scope="module")
-def argolight_e_xres_dataset(conn, project_structure):
+def argolight_e_x_res_dataset(conn, project_structure):
     return _generate_dataset(
         conn,
         "Argolight_E_x_resolution",
         project_structure,
-        "ae_date_stamp_1",
+        "aex_date_stamp_1",
         "argolight_e_x-res_image.dv",
         ArgolightEDataset.class_model_uri,
-        "./tests/data/config_files/argolight_e/study_config.yaml",
+        "./tests/data/config_files/argolight_e_x_res/study_config.yaml",
     )
 
 
 @pytest.fixture(scope="module")
-def argolight_e_yres_dataset(conn, project_structure):
+def argolight_e_y_res_dataset(conn, project_structure):
     return _generate_dataset(
         conn,
         "Argolight_E_y_resolution",
         project_structure,
-        "ae_date_stamp_1",
+        "aey_date_stamp_1",
         "argolight_e_y-res_image.dv",
         ArgolightEDataset.class_model_uri,
-        "./tests/data/config_files/argolight_e/study_config.yaml",
+        "./tests/data/config_files/argolight_e_y_res/study_config.yaml",
     )
 
 
@@ -149,8 +155,8 @@ def test_argolight_b(argolight_b_dataset):
     assert process_annotation["analysis_class"] == "ArgolightBAnalysis"
 
 
-def test_argolight_e_xres(argolight_e_xres_dataset):
-    dataset, config = argolight_e_xres_dataset
+def test_argolight_e_x_res(argolight_e_x_res_dataset):
+    dataset, config = argolight_e_x_res_dataset
     process.process_dataset(dataset=dataset, config=config)
 
     process_annotation_ids = ezomero.get_map_annotation_ids(
@@ -168,8 +174,8 @@ def test_argolight_e_xres(argolight_e_xres_dataset):
     assert process_annotation["analysis_class"] == "ArgolightEAnalysis"
 
 
-def test_argolight_e_yres(argolight_e_yres_dataset):
-    dataset, config = argolight_e_yres_dataset
+def test_argolight_e_y_res(argolight_e_y_res_dataset):
+    dataset, config = argolight_e_y_res_dataset
     process.process_dataset(dataset=dataset, config=config)
 
     process_annotation_ids = ezomero.get_map_annotation_ids(

@@ -11,12 +11,21 @@ from microscopemetrics_omero import omero_tools
 logger = logging.getLogger(__name__)
 
 SHAPE_TO_FUNCTION = {
-    mm_schema.Point: omero_tools.create_shape_point,
-    mm_schema.Line: omero_tools.create_shape_line,
-    mm_schema.Rectangle: omero_tools.create_shape_rectangle,
-    mm_schema.Ellipse: omero_tools.create_shape_ellipse,
-    mm_schema.Polygon: omero_tools.create_shape_polygon,
-    mm_schema.Mask: omero_tools.create_shape_mask,
+    "Point": omero_tools.create_shape_point,
+    "Line": omero_tools.create_shape_line,
+    "Rectangle": omero_tools.create_shape_rectangle,
+    "Ellipse": omero_tools.create_shape_ellipse,
+    "Polygon": omero_tools.create_shape_polygon,
+    "Mask": omero_tools.create_shape_mask,
+}
+
+SHAPE_TYPE_TO_FUNCTION = {
+    "point": omero_tools.create_shape_point,
+    "line": omero_tools.create_shape_line,
+    "rectangles": omero_tools.create_shape_rectangle,
+    "ellipses": omero_tools.create_shape_ellipse,
+    "polygons": omero_tools.create_shape_polygon,
+    "masks": omero_tools.create_shape_mask,
 }
 
 
@@ -52,7 +61,9 @@ def dump_image(
             .transpose((1, 4, 0, 2, 3))
         )
     elif isinstance(image, mm_schema.Image2D):
-        image_data = np.array(image.data).reshape((1, 1, image.shape_y, image.shape_x, 1))
+        image_data = np.array(image.data).reshape(
+            (1, 1, image.shape_y, image.shape_x, 1)
+        )
     elif isinstance(image, mm_schema.ImageAsNumpy):
         image_data = image.data.transpose((1, 4, 0, 2, 3))
     else:
@@ -98,7 +109,13 @@ def dump_roi(
         )
         return None
 
-    shapes = [SHAPE_TO_FUNCTION[type(shape)](shape) for shape in roi.shapes]
+    # TODO: replace when updated shape types are available
+    shapes = [
+        SHAPE_TO_FUNCTION[shape.class_name](shape) for shape in roi.shapes.values()
+    ]
+    # shapes = []
+    # for shape_type, fn in SHAPE_TYPE_TO_FUNCTION.items():
+    #     shapes += [fn(shape) for shape in getattr(roi, shape_type)]
 
     return omero_tools.create_roi(
         conn=conn,
@@ -206,6 +223,7 @@ def dump_comment(
     append_to_existing: bool = False,
     as_table: bool = False,
 ):
+    # TODO: we should dump details on the comments. Like authors, date, etc.
     if append_to_existing or as_table:
         logger.error(
             f"Comment {comment.class_name} cannot be appended to existing or dumped as table. Skipping dump."

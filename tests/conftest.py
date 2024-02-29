@@ -216,7 +216,7 @@ def mm_image_mask_fixture():
 
 
 @pytest.fixture
-def mm_roi_fixture(mm_image_mask_fixture):
+def roi(mm_image_mask_fixture):
     shapes = [
         mm_schema.Point(
             label="point",
@@ -303,7 +303,7 @@ def mm_roi_fixture(mm_image_mask_fixture):
 
 
 @pytest.fixture
-def mm_tag_fixture():
+def tag():
     return mm_schema.Tag(
         id=64,
         text="a test tag",
@@ -312,7 +312,7 @@ def mm_tag_fixture():
 
 
 @pytest.fixture
-def mm_key_values_fixture():
+def key_values():
     return mm_schema.KeyValues(
         key_1=64,
         key_2="a test key",
@@ -321,8 +321,10 @@ def mm_key_values_fixture():
 
 
 @pytest.fixture
-def mm_comment_fixture():
+def comment():
     return mm_schema.Comment(
+        datetime="2021-01-01T00:00:00",
+        author="test_author",
         text="a test comment",
     )
 
@@ -341,7 +343,7 @@ def mm_table_as_dict_fixture(dict_table_fixture):
     return dict_to_table_inlined(
         dictionary=dict_table_fixture,
         name="test_table",
-        description="test table description",
+        table_description="test table description",
     )
 
 
@@ -491,24 +493,37 @@ def project_structure(conn, timestamp, numpy_image_fixture, users_groups, omero_
             # Loop to post projects, datasets, and images
             if group_str["projects"] is not None:
                 for project_name, project_str in group_str["projects"].items():
-                    proj_id = ezomero.post_project(current_conn, project_name, "test project")
+                    proj_id = ezomero.post_project(
+                        current_conn, project_name, "test project"
+                    )
                     project_info[project_name] = proj_id
 
                     if project_str["datasets"] is not None:
-                        for dataset_name, dataset_str in project_str["datasets"].items():
+                        for dataset_name, dataset_str in project_str[
+                            "datasets"
+                        ].items():
                             ds_id = ezomero.post_dataset(
                                 current_conn, dataset_name, proj_id, "test dataset"
                             )
                             dataset_info[dataset_name] = ds_id
 
-                            if dataset_str is not None and dataset_str["images"] is not None:
+                            if (
+                                dataset_str is not None
+                                and dataset_str["images"] is not None
+                            ):
                                 for image_name in dataset_str["images"]:
                                     im_id = ezomero.ezimport(
                                         current_conn,
                                         f"./tests/data/images/{image_name}",
                                         dataset=ds_id,
                                     )
-                                    image_info[image_name] = im_id[0]
+                                    try:
+                                        image_info[image_name] = im_id[0]
+                                    except Exception as e:
+                                        print(
+                                            f"Could not import image {image_info[image_name]}"
+                                        )
+                                        raise e
             if group_str["datasets"] is not None:
                 for dataset_name, dataset_str in group_str["datasets"].items():
                     ds_id = ezomero.post_dataset(
@@ -518,7 +533,9 @@ def project_structure(conn, timestamp, numpy_image_fixture, users_groups, omero_
                     if dataset_str is not None and dataset_str["images"] is not None:
                         for image_name in dataset_str["images"]:
                             im_id = ezomero.ezimport(
-                                current_conn, f"./tests/data/images/{image_name}", dataset=ds_id
+                                current_conn,
+                                f"./tests/data/images/{image_name}",
+                                dataset=ds_id,
                             )
                             image_info[image_name] = im_id[0]
             if group_str["images"] is not None:
@@ -532,13 +549,17 @@ def project_structure(conn, timestamp, numpy_image_fixture, users_groups, omero_
             if user_name != "default_user":
                 current_conn.close()
 
-    yield {"project_info": project_info, "dataset_info": dataset_info, "image_info": image_info}
+    yield {
+        "project_info": project_info,
+        "dataset_info": dataset_info,
+        "image_info": image_info,
+    }
     current_group = conn.getGroupFromContext().getId()
     conn.SERVICE_OPTS.setOmeroGroup(-1)
-    # for pname, pid in project_info.items():
-    #     conn.deleteObjects(
-    #         "Project", [pid], deleteAnns=True, deleteChildren=True, wait=True
-    #     )
+    for pname, pid in project_info.items():
+        conn.deleteObjects(
+            "Project", [pid], deleteAnns=True, deleteChildren=True, wait=True
+        )
     conn.SERVICE_OPTS.setOmeroGroup(current_group)
 
 

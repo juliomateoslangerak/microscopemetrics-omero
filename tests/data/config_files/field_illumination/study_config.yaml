@@ -20,16 +20,14 @@ analysis:  # These are the OMERO datasets. One dataset per type of analysis
     do_analysis: true
     sample: homogeneity
     analysis_class: FieldIlluminationAnalysis
+    microscope: microscope_1
     name: Field Illumination
     description: Analysis on chroma slides
     data:
       name: field_illumination_image
     parameters:
       bit_depth: 16
-      saturation_threshold: 0.01
-      center_threshold: 0.9
-      corner_fraction: 0.1
-      sigma: 5.0
-      intensity_map_size: 64
-
-
+#      saturation_threshold: 0.01
+#      corner_fraction: 0.1
+#      sigma: 5.0
+#      intensity_map_size: 64

@@ -20,6 +20,7 @@ analysis:  # These are the OMERO datasets. One dataset per type of analysis
     do_analysis: true
     sample: argolight
     analysis_class: ArgolightBAnalysis
+    microscope: microscope_1
     name: Argolight B
     description: Argolight B analysis (spots pattern)
     data:
@@ -32,3 +33,14 @@ analysis:  # These are the OMERO datasets. One dataset per type of analysis
       sigma_z: 1.0
       lower_threshold_correction_factors: [0.4, 0.5, 0.5, 0.5]
       upper_threshold_correction_factors: [0.45, 0.7, 0.7, 0.7]
+#      bit_depth: 16
+
+#    spots_distance: float = None
+#    saturation_threshold: float = 0.01
+#    sigma_z: float = 1.0
+#    sigma_y: float = 3.0
+#    sigma_x: float = 3.0
+#    bit_depth: Optional[int] = None
+#    lower_threshold_correction_factors: Optional[Union[float, List[float]]] = empty_list()
+#    upper_threshold_correction_factors: Optional[Union[float, List[float]]] = empty_list()
+#    remove_center_cross: Optional[Union[bool, Bool]] = False
