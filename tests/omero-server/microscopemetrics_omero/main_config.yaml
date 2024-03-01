@@ -35,15 +35,15 @@ dump_strategy:
         link: true
         append_to_existing: false
         as_table: false
-    profile_rois:
+    roi_profiles:
       image:
         source: field_illumination_image
         link: true
-    corner_rois:
+    roi_corners:
       image:
         source: field_illumination_image
         link: true
-    center_of_illumination:
+    roi_centroids_weighted:
       image:
         source: field_illumination_image
         link: true
@@ -56,7 +56,7 @@ dump_strategy:
       image:
         source: argolight_b_image
         link: true
-    intensity_measurements:
+    intensity_key_values:
       image:
         source: argolight_b_image
         link: true
@@ -70,7 +70,7 @@ dump_strategy:
         link: true
         append_to_existing: true
         as_table: true
-    distance_measurements:
+    distance_key_values:
       image:
         source: argolight_b_image
         link: true
@@ -96,11 +96,6 @@ dump_strategy:
       image:
         source: field_illumination_image
         link: true
-    center_of_illumination:
-      image:
-        source: field_illumination_image
-        link: true
-
 
   ArgolightEDataset:
     peaks_rois:
